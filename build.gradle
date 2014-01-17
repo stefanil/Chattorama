@@ -4,9 +4,9 @@ apply plugin: "eclipse"
 
 sourceCompatibility = 1.8
 
-//mainClassName = "de.saxsys.chattorama.Starter"
+mainClassName = "de.saxsys.jfx.chattorama.Starter"
+manifest.mainAttributes("Main-Class" : mainClassName)
 
-//manifest.mainAttribute("Main-Class": mainClassName)
 
 
 repositories {
@@ -21,7 +21,7 @@ test.scanForTestClasses = false
 
 dependencies {
 
-	compile "de.saxsys:mvvmFX:0.1.3-SNAPSHOT"
+	//compile "de.saxsys:mvvmFX:0.1.3-SNAPSHOT"
 
 }
 
