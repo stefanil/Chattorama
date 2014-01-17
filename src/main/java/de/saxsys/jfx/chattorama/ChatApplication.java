@@ -1,5 +1,8 @@
 package de.saxsys.jfx.chattorama;
 
+import de.saxsys.jfx.mvvm.base.viewmodel.ViewModel;
+import de.saxsys.jfx.mvvm.viewloader.ViewLoader;
+import de.saxsys.jfx.mvvm.viewloader.ViewTuple;
 import groovy.lang.Closure;
 import groovy.util.Eval;
 import javafx.animation.Interpolator;
@@ -52,35 +55,43 @@ public class ChatApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Pane root = PaneBuilder.create().children(
-                VBoxBuilder.create().id("content").children(
-                        nameField = TextFieldBuilder.create().build(),
-                        postField = TextAreaBuilder.create().build(),
-                        newButton = ButtonBuilder.create().build()
-                ).build()
-        ).build();
+//        Pane root = PaneBuilder.create().children(
+//                VBoxBuilder.create().id("content").children(
+//                        nameField = TextFieldBuilder.create().build(),
+//                        postField = TextAreaBuilder.create().build(),
+//                        newButton = ButtonBuilder.create().build()
+//                ).build()
+//        ).build();
+//
+//        setupBinding();
+//        addClientSideAction();
+//
+//        Scene scene = new Scene(root, 300, 250);
+//        stage.setScene(scene);
+//        stage.setTitle(getClass().getName());
+////        scene.getStylesheets().add("/path/to/css");
+//
+//        stage.show();
+//
+//
+//        clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
+//            @Override
+//            public void onFinished(List<ClientPresentationModel> presentationModels) {
+//                System.out.println(""+ presentationModels.size() + "bekommen");
+//                // visualisieren, dass wir die initialen Daten haben.
+//
+//                longPoll();
+//
+//            }
+//        });
 
-        setupBinding();
-        addClientSideAction();
+        ViewLoader viewLoader = new ViewLoader();
 
-        Scene scene = new Scene(root, 300, 250);
-        stage.setScene(scene);
-        stage.setTitle(getClass().getName());
-//        scene.getStylesheets().add("/path/to/css");
+        final ViewTuple<ChatViewModel> viewTuple = viewLoader.loadViewTuple(ChatView.class);
+
+        stage.setScene(new Scene(viewTuple.getView()));
 
         stage.show();
-
-
-        clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
-            @Override
-            public void onFinished(List<ClientPresentationModel> presentationModels) {
-                System.out.println(""+ presentationModels.size() + "bekommen");
-                // visualisieren, dass wir die initialen Daten haben.
-
-                longPoll();
-
-            }
-        });
     }
 
     private boolean channelBlocked = false;
