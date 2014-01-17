@@ -1,3 +1,13 @@
 .settings
 /.classpath
 /.project
+
+
+# Gradle
+.gradle
+build/
+
+
+# IDEA
+*.iml
+.idea
