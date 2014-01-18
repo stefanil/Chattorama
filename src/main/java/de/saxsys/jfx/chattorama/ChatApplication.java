@@ -1,8 +1,7 @@
 package de.saxsys.jfx.chattorama;
 
-import de.saxsys.jfx.mvvm.base.viewmodel.ViewModel;
-import de.saxsys.jfx.mvvm.viewloader.ViewLoader;
-import de.saxsys.jfx.mvvm.viewloader.ViewTuple;
+import de.saxsys.jfx.mvvm.di.FXMLLoaderWrapper;
+import de.saxsys.jfx.mvvm.viewloader.*;
 import groovy.lang.Closure;
 import groovy.util.Eval;
 import javafx.animation.Interpolator;
@@ -12,6 +11,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -29,6 +29,9 @@ import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.net.URL;
 import java.util.List;
 
 import static org.opendolphin.binding.JFXBinder.bind;
@@ -38,10 +41,6 @@ public class ChatApplication extends Application {
 
 
     static ClientDolphin clientDolphin;
-
-    private TextField nameField;
-    private TextArea  postField;
-    private Button    newButton;
 
     private PresentationModel postModel;
 
@@ -55,43 +54,44 @@ public class ChatApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        Pane root = PaneBuilder.create().children(
-//                VBoxBuilder.create().id("content").children(
-//                        nameField = TextFieldBuilder.create().build(),
-//                        postField = TextAreaBuilder.create().build(),
-//                        newButton = ButtonBuilder.create().build()
-//                ).build()
-//        ).build();
-//
-//        setupBinding();
-//        addClientSideAction();
-//
-//        Scene scene = new Scene(root, 300, 250);
-//        stage.setScene(scene);
-//        stage.setTitle(getClass().getName());
-////        scene.getStylesheets().add("/path/to/css");
-//
-//        stage.show();
-//
-//
-//        clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
-//            @Override
-//            public void onFinished(List<ClientPresentationModel> presentationModels) {
-//                System.out.println(""+ presentationModels.size() + "bekommen");
-//                // visualisieren, dass wir die initialen Daten haben.
-//
-//                longPoll();
-//
-//            }
-//        });
 
-        ViewLoader viewLoader = new ViewLoader();
+        String pathToFXML = "/"
+                + ChatView.class.getPackage().getName().replaceAll("\\.","/") + "/"
+                + ChatView.class.getSimpleName() + ".fxml";
 
-        final ViewTuple<ChatViewModel> viewTuple = viewLoader.loadViewTuple(ChatView.class);
+        URL location = getClass().getResource(pathToFXML);
 
-        stage.setScene(new Scene(viewTuple.getView()));
+
+
+        FXMLLoader fxmlLoader = new FXMLLoader(location);
+
+        fxmlLoader.load();
+
+        ChatView chatView = fxmlLoader.getController();
+
+        setupBinding(chatView);
+        addClientSideAction();
+
+
+        Scene scene = new Scene(fxmlLoader.getRoot());
+        stage.setScene(scene);
+        stage.setTitle(getClass().getName());
+//        scene.getStylesheets().add("/path/to/css");
 
         stage.show();
+
+
+        clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
+            @Override
+            public void onFinished(List<ClientPresentationModel> presentationModels) {
+                System.out.println(""+ presentationModels.size() + "bekommen");
+                // visualisieren, dass wir die initialen Daten haben.
+
+                longPoll();
+
+            }
+        });
+
     }
 
     private boolean channelBlocked = false;
@@ -118,13 +118,12 @@ public class ChatApplication extends Application {
         return value;
     };
 
-    private void setupBinding() {
+    private void setupBinding(ChatView chatView) {
+        bind("text").of(chatView.nameField).to(ATTR_NAME).of(postModel, withRelease);
+        bind(ATTR_NAME).of(postModel).to("text").of(chatView.nameField);
 
-        bind("text").of(nameField).to(ATTR_NAME).of(postModel, withRelease);
-        bind(ATTR_NAME).of(postModel).to("text").of(nameField);
-
-        bind("text").of(postField).to(ATTR_MESSAGE).of(postModel, withRelease);
-        bind(ATTR_MESSAGE).of(postModel).to("text").of(postField);
+        bind("text").of(chatView.messageBox).to(ATTR_MESSAGE).of(postModel, withRelease);
+        bind(ATTR_MESSAGE).of(postModel).to("text").of(chatView.messageBox);
 
 
         clientDolphin.addModelStoreListener(TYPE_POST, new ModelStoreListener() {
@@ -149,9 +148,9 @@ public class ChatApplication extends Application {
     }
 
     private void addClientSideAction() {
-        newButton.setOnAction((ActionEvent event) -> {
-            clientDolphin.send(CMD_POST);
-        });
+//        newButton.setOnAction((ActionEvent event) -> {
+//            clientDolphin.send(CMD_POST);
+//        });
     }
 
 }
