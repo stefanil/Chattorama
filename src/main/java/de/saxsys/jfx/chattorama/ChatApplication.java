@@ -1,26 +1,23 @@
 package de.saxsys.jfx.chattorama;
 
-import de.saxsys.jfx.mvvm.di.FXMLLoaderWrapper;
-import de.saxsys.jfx.mvvm.viewloader.*;
-import groovy.lang.Closure;
 import groovy.util.Eval;
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransitionBuilder;
-import javafx.animation.Transition;
+import javafx.animation.*;
 import javafx.application.Application;
+import javafx.beans.property.MapProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.PaneBuilder;
-import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import org.opendolphin.binding.Converter;
-import org.opendolphin.binding.JFXBinder;
 import org.opendolphin.core.ModelStoreEvent;
 import org.opendolphin.core.ModelStoreListener;
 import org.opendolphin.core.PresentationModel;
@@ -29,10 +26,9 @@ import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.opendolphin.binding.JFXBinder.bind;
 import static de.saxsys.jfx.chattorama.ChatterConstants.*;
@@ -44,6 +40,10 @@ public class ChatApplication extends Application {
 
     private PresentationModel postModel;
 
+    private ChatView chatView;
+
+    private ViewLoader<ChatView> chatViewLoader;
+
 
     public ChatApplication() {
         ClientAttribute nameAttribute = new ClientAttribute(ATTR_NAME, "");
@@ -52,28 +52,23 @@ public class ChatApplication extends Application {
         postModel = clientDolphin.presentationModel(PM_ID_INPUT, nameAttribute, postAttribute, dateAttribute);
     }
 
+
     @Override
     public void start(Stage stage) throws Exception {
 
-        String pathToFXML = "/"
-                + ChatView.class.getPackage().getName().replaceAll("\\.","/") + "/"
-                + ChatView.class.getSimpleName() + ".fxml";
+        chatViewLoader = new ViewLoader<>(ChatView.class);
 
-        URL location = getClass().getResource(pathToFXML);
+        chatView = chatViewLoader.getController();
 
-
-
-        FXMLLoader fxmlLoader = new FXMLLoader(location);
-
-        fxmlLoader.load();
-
-        ChatView chatView = fxmlLoader.getController();
-
-        setupBinding(chatView);
+        setupBinding();
         addClientSideAction();
 
 
-        Scene scene = new Scene(fxmlLoader.getRoot());
+
+        Parent root = chatViewLoader.getRoot();
+        root.setOpacity(0.2);
+
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle(getClass().getName());
 //        scene.getStylesheets().add("/path/to/css");
@@ -87,8 +82,13 @@ public class ChatApplication extends Application {
                 System.out.println(""+ presentationModels.size() + "bekommen");
                 // visualisieren, dass wir die initialen Daten haben.
 
-                longPoll();
+                FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000),root);
+                fadeTransition.setFromValue(0.2);
+                fadeTransition.setToValue(1);
 
+                fadeTransition.play();
+
+                longPoll();
             }
         });
 
@@ -118,7 +118,7 @@ public class ChatApplication extends Application {
         return value;
     };
 
-    private void setupBinding(ChatView chatView) {
+    private void setupBinding() {
         bind("text").of(chatView.nameField).to(ATTR_NAME).of(postModel, withRelease);
         bind(ATTR_NAME).of(postModel).to("text").of(chatView.nameField);
 
@@ -126,14 +126,54 @@ public class ChatApplication extends Application {
         bind(ATTR_MESSAGE).of(postModel).to("text").of(chatView.messageBox);
 
 
+
+        ObservableMap<String,HBox> messageViews = FXCollections.observableHashMap();
+
+        ObservableList<HBox> messages = FXCollections.observableArrayList();
+        chatView.liste.setItems(messages);
+
+
         clientDolphin.addModelStoreListener(TYPE_POST, new ModelStoreListener() {
             @Override
             public void modelStoreChanged(ModelStoreEvent event) {
                 if (event.getType() == ModelStoreEvent.Type.ADDED) {
-                    System.out.println(" wir haben den pm bekommen:  " + event.getPresentationModel().getId());
+                    ViewLoader<MessageView> messageViewLoader = new ViewLoader<>(MessageView.class);
+
+                    MessageView messageView = messageViewLoader.getController();
+                    messageViewLoader.getRoot().setId(event.getPresentationModel().getId());
+
+
+                    final PresentationModel presentationModel = event.getPresentationModel();
+
+
+                    bind("text").of(messageView.nameLabel).to(ATTR_NAME).of(presentationModel, withRelease);
+                    bind(ATTR_NAME).of(presentationModel).to("text").of(messageView.nameLabel);
+
+                    bind("text").of(messageView.messageBox).to(ATTR_MESSAGE).of(presentationModel, withRelease);
+                    bind(ATTR_MESSAGE).of(presentationModel).to("text").of(messageView.messageBox);
+
+                    bind("text").of(messageView.dateLabel).to(ATTR_DATE).of(presentationModel, withRelease);
+                    bind(ATTR_DATE).of(presentationModel).to("text").of(messageView.dateLabel);
+
+
+
+                    HBox messageViewContainer = (HBox)messageViewLoader.getRoot();
+                    messageViews.put(event.getPresentationModel().getId(),messageViewContainer);
+                    messages.add(messageViewContainer);
+
                 }
                 if (event.getType() == ModelStoreEvent.Type.REMOVED) {
-                    System.out.println(" wir haben den pm geloescht:  " + event.getPresentationModel().getId());
+                    String id = event.getPresentationModel().getId();
+                    if(messageViews.containsKey(id)){
+
+                        // Erst hole die HBox der Message aus der Map
+                        final HBox view = messageViews.get(id);
+                        //... dann entferne sie aus der ListBox...
+                        messages.remove(view);
+                        //... und anschließend aus der Map
+                        messageViews.remove(id);
+                    }
+
                 }
             }
         });
@@ -148,9 +188,9 @@ public class ChatApplication extends Application {
     }
 
     private void addClientSideAction() {
-//        newButton.setOnAction((ActionEvent event) -> {
-//            clientDolphin.send(CMD_POST);
-//        });
+        chatView.newButton.setOnAction((ActionEvent event) -> {
+            clientDolphin.send(CMD_POST);
+        });
     }
 
 }

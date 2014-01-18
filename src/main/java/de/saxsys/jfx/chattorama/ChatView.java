@@ -1,13 +1,11 @@
 package de.saxsys.jfx.chattorama;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.scene.layout.HBox;
 
 public class ChatView{
 
@@ -17,4 +15,10 @@ public class ChatView{
 
     @FXML
     TextArea messageBox;
+
+    @FXML
+    Button newButton;
+
+    @FXML
+    ListView<HBox> liste;
 }
