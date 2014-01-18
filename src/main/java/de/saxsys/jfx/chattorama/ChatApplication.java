@@ -22,6 +22,11 @@ import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -122,6 +127,7 @@ public class ChatApplication extends Application {
     private void setupBinding() {
     	
     	// bind textfield and message box
+    	
         bind("text").of(chatView.nameField).to(ATTR_NAME).of(postModel, withRelease);
         bind(ATTR_NAME).of(postModel).to("text").of(chatView.nameField);
 
@@ -156,8 +162,8 @@ public class ChatApplication extends Application {
                     bind(ATTR_NAME).of(presentationModel).to("text").of(messageView.nameLabel);
                     bind("text").of(messageView.nameLabel).to(ATTR_NAME).of(presentationModel, withRelease);
                     
-                    bind(ATTR_MESSAGE).of(presentationModel).to("text").of(messageView.messageBox);
-                    bind("text").of(messageView.messageBox).to(ATTR_MESSAGE).of(presentationModel, withRelease);
+                    bind(ATTR_MESSAGE).of(presentationModel).to("text").of(messageView.messageBox.getChildren().get(0));
+                    bind("text").of(messageView.messageBox.getChildren().get(0)).to(ATTR_MESSAGE).of(presentationModel, withRelease);
                     
                     bind(ATTR_DATE).of(presentationModel).to("text").of(messageView.dateLabel);
                     bind("text").of(messageView.dateLabel).to(ATTR_DATE).of(presentationModel, withRelease);
