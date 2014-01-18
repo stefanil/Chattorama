@@ -1,22 +1,30 @@
 package de.saxsys.jfx.chattorama;
 
+import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_DATE;
+import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_MESSAGE;
+import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_NAME;
+import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_INIT;
+import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_POLL;
+import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_POST;
+import static de.saxsys.jfx.chattorama.ChatterConstants.PM_ID_INPUT;
+import static de.saxsys.jfx.chattorama.ChatterConstants.TYPE_POST;
+import static org.opendolphin.binding.JFXBinder.bind;
 import groovy.util.Eval;
-import javafx.animation.*;
+
+import java.util.List;
+
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
+
 import org.opendolphin.binding.Converter;
 import org.opendolphin.core.ModelStoreEvent;
 import org.opendolphin.core.ModelStoreListener;
@@ -25,13 +33,6 @@ import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.opendolphin.binding.JFXBinder.bind;
-import static de.saxsys.jfx.chattorama.ChatterConstants.*;
 
 public class ChatApplication extends Application {
 
@@ -119,48 +120,48 @@ public class ChatApplication extends Application {
     };
 
     private void setupBinding() {
+    	
+    	// bind textfield and message box
         bind("text").of(chatView.nameField).to(ATTR_NAME).of(postModel, withRelease);
         bind(ATTR_NAME).of(postModel).to("text").of(chatView.nameField);
 
         bind("text").of(chatView.messageBox).to(ATTR_MESSAGE).of(postModel, withRelease);
         bind(ATTR_MESSAGE).of(postModel).to("text").of(chatView.messageBox);
 
-
-
         ObservableMap<String,HBox> messageViews = FXCollections.observableHashMap();
 
         ObservableList<HBox> messages = FXCollections.observableArrayList();
         chatView.liste.setItems(messages);
 
-
+        // add listener for handling presentation model changes
         clientDolphin.addModelStoreListener(TYPE_POST, new ModelStoreListener() {
             @Override
             public void modelStoreChanged(ModelStoreEvent event) {
+            	// if new post was added
                 if (event.getType() == ModelStoreEvent.Type.ADDED) {
+                	
+                	// load messages view
                     ViewLoader<MessageView> messageViewLoader = new ViewLoader<>(MessageView.class);
-
                     MessageView messageView = messageViewLoader.getController();
                     messageViewLoader.getRoot().setId(event.getPresentationModel().getId());
-
-
-                    final PresentationModel presentationModel = event.getPresentationModel();
-
-
-                    bind("text").of(messageView.nameLabel).to(ATTR_NAME).of(presentationModel, withRelease);
-                    bind(ATTR_NAME).of(presentationModel).to("text").of(messageView.nameLabel);
-
-                    bind("text").of(messageView.messageBox).to(ATTR_MESSAGE).of(presentationModel, withRelease);
-                    bind(ATTR_MESSAGE).of(presentationModel).to("text").of(messageView.messageBox);
-
-                    bind("text").of(messageView.dateLabel).to(ATTR_DATE).of(presentationModel, withRelease);
-                    bind(ATTR_DATE).of(presentationModel).to("text").of(messageView.dateLabel);
-
-
-
+                    
+                    // take message view and that child
                     HBox messageViewContainer = (HBox)messageViewLoader.getRoot();
                     messageViews.put(event.getPresentationModel().getId(),messageViewContainer);
                     messages.add(messageViewContainer);
-
+                    
+                    // bind
+                    final PresentationModel presentationModel = event.getPresentationModel();                   
+                    
+                    bind(ATTR_NAME).of(presentationModel).to("text").of(messageView.nameLabel);
+                    bind("text").of(messageView.nameLabel).to(ATTR_NAME).of(presentationModel, withRelease);
+                    
+                    bind(ATTR_MESSAGE).of(presentationModel).to("text").of(messageView.messageBox);
+                    bind("text").of(messageView.messageBox).to(ATTR_MESSAGE).of(presentationModel, withRelease);
+                    
+                    bind(ATTR_DATE).of(presentationModel).to("text").of(messageView.dateLabel);
+                    bind("text").of(messageView.dateLabel).to(ATTR_DATE).of(presentationModel, withRelease);
+                    
                 }
                 if (event.getType() == ModelStoreEvent.Type.REMOVED) {
                     String id = event.getPresentationModel().getId();

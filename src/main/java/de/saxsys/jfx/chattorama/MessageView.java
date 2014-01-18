@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import sun.net.idn.StringPrep;
+//import sun.net.idn.StringPrep;
 
 import java.net.URL;
 import java.util.ResourceBundle;
