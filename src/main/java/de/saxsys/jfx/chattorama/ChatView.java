@@ -1,13 +1,20 @@
 package de.saxsys.jfx.chattorama;
 
-import de.saxsys.jfx.mvvm.base.view.View;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ChatView extends View<ChatViewModel> {
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+public class ChatView{
 
-    }
+
+    @FXML
+    TextField nameField;
+
+    @FXML
+    TextArea messageBox;
 }
