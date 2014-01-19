@@ -4,13 +4,18 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="650.0" spacing="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.saxsys.jfx.chattorama.ChatView">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="650.0" spacing="15.0" style="-fx-background-color: #dddddd;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.saxsys.jfx.chattorama.ChatView">
 	<padding>
 		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 	</padding>
 	<children>
-		<ListView fx:id="liste" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+		<ListView fx:id="liste" prefHeight="420.0" prefWidth="200.0" style="-fx-background-color: efefef;" VBox.vgrow="ALWAYS">
+			<VBox.margin>
+				<Insets />
+			</VBox.margin>
+		</ListView>
 		<VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
 			<children>
 				<HBox spacing="10.0">
@@ -27,28 +32,34 @@
 					</children>
 				</HBox>
 				<HBox prefHeight="100.0">
-					<children>
-						<TextArea fx:id="messageBox" prefHeight="200.0" HBox.hgrow="ALWAYS" />
-<!-- 						<GridPane prefWidth="40.0" HBox.hgrow="NEVER" xmlns:fx="http://javafx.com/fxml"> -->
-<!-- 							<columnConstraints> -->
-<!-- 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" /> -->
-<!-- 							</columnConstraints> -->
-<!-- 							<rowConstraints> -->
-<!-- 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" /> -->
-<!-- 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" /> -->
-<!-- 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" /> -->
-<!-- 							</rowConstraints> -->
-<!-- 							<children> -->
-<!-- 								<Button mnemonicParsing="false" onMouseClicked="#onCryPressed" text=":)" /> -->
-<!-- 								<Button mnemonicParsing="false" onMouseClicked="#onSmilePressed" text=":(" GridPane.rowIndex="1" /> -->
-<!-- 							</children> -->
-<!-- 							<HBox.margin> -->
-<!-- 								<Insets left="10.0" /> -->
-<!-- 							</HBox.margin> -->
-<!-- 						</GridPane> -->
+					<children><TextFlow fx:id="messageBox" prefHeight="200.0" style="-fx-background-color: #ffffff;" HBox.hgrow="ALWAYS">
+<children><Text strokeType="OUTSIDE" strokeWidth="0.0" />
+</children></TextFlow>
+						
+						<GridPane alignment="TOP_CENTER" hgap="10.0" vgap="10.0" HBox.hgrow="NEVER">
+							<columnConstraints>
+								<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Button fx:id="cryEmoticon" mnemonicParsing="false" onMouseClicked="#onCryClicked" />
+								<Button fx:id="smileEmoticon" mnemonicParsing="false" onMouseClicked="#onSmileClicked" GridPane.rowIndex="1" /><Button fx:id="laughEmoticon" mnemonicParsing="false" onMouseClicked="#onLaughClicked" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" /><Button fx:id="rhinoEmoticon" mnemonicParsing="false" onMouseClicked="#onRhinoClicked" GridPane.columnIndex="1" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" /><Button fx:id="bullEmoticon" mnemonicParsing="false" onMouseClicked="#onBullClicked" GridPane.columnIndex="1" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" /><Button fx:id="eagleEmoticon" mnemonicParsing="false" onMouseClicked="#onEagleClicked" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" />
+							</children>
+							<HBox.margin>
+								<Insets left="10.0" />
+							</HBox.margin>
+						</GridPane>
+						
 					</children>
 				</HBox>
-				<Button fx:id="newButton" mnemonicParsing="false" text="Absenden" />
+				
+				<Button fx:id="newButton" />
+				<!-- mnemonicParsing="false" text="Absenden" -->
+				
 			</children>
 		</VBox>
 	</children>

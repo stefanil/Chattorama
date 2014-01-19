@@ -3,7 +3,10 @@ package de.saxsys.jfx.chattorama;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
-//import sun.net.idn.StringPrep;
+
+import com.aquafx_project.AquaFx;
+import com.aquafx_project.controls.skin.styles.styler.LabelStyler;
+
 
 public class MessageView  {
 
@@ -16,6 +19,16 @@ public class MessageView  {
     Label dateLabel;
 
     @FXML
-//    TextArea messageBox;
     TextFlow messageBox;
+    
+	public void style() {
+		
+		LabelStyler ls = AquaFx.createLabelStyler()
+				.setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT);
+		ls.style(nameLabel);
+		ls.style(dateLabel);
+		AquaFx.setGroupBox(messageBox);
+		
+	}
+    
 }

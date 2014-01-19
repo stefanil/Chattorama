@@ -1,19 +1,16 @@
-.settings
-/.classpath
-/.project
-
-
 # Gradle
 .gradle
-build/
+build
 
-#Eclipse
+# Java
+bin
+
+# Eclipse
 .settings
 /.gitignore.swp
 /.project
 /.classpath
 
 # IDEA
-*.iml
-.idea
-/bin
+/*.iml
+/.idea
