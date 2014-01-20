@@ -12,9 +12,8 @@ public class ViewLoader<T>{
 
     public ViewLoader(Class<T> viewType, T view){
         URL location = getUrl(viewType);
-
         fxmlLoader  = new FXMLLoader(location);
-
+        fxmlLoader.setRoot(view);
         fxmlLoader.setController(view);
         load();
     }
