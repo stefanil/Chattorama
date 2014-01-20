@@ -10,8 +10,6 @@ sourceCompatibility = 1.8
 mainClassName = "de.saxsys.jfx.chattorama.Starter"
 manifest.mainAttributes("Main-Class" : mainClassName)
 
-
-
 repositories {
 	mavenCentral()
 

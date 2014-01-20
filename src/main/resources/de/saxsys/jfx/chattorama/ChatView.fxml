@@ -10,7 +10,7 @@
 		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 	</padding>
 	<children>
-		<ListView fx:id="liste" prefHeight="420.0" prefWidth="200.0" style="-fx-background-color: #efefef; -fx-border-color: #ccccc;" VBox.vgrow="ALWAYS">
+		<ListView fx:id="liste" prefHeight="420.0" prefWidth="200.0" style="-fx-background-color: #efefef; -fx-border-color: #cccccc;" VBox.vgrow="ALWAYS">
 			<VBox.margin>
 				<Insets />
 			</VBox.margin>
