@@ -3,40 +3,39 @@ package de.saxsys.jfx.chattorama;
 import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_DATE;
 import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_MESSAGE;
 import static de.saxsys.jfx.chattorama.ChatterConstants.ATTR_NAME;
+import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_INIT;
 import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_POLL;
 import static de.saxsys.jfx.chattorama.ChatterConstants.CMD_POST;
+import static de.saxsys.jfx.chattorama.ChatterConstants.PM_ID_INPUT;
 import static de.saxsys.jfx.chattorama.ChatterConstants.TYPE_POST;
 import static org.opendolphin.binding.JFXBinder.bind;
-import groovy.json.StringEscapeUtils;
 import groovy.util.Eval;
 
 import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import org.opendolphin.binding.Converter;
 import org.opendolphin.core.ModelStoreEvent;
 import org.opendolphin.core.ModelStoreListener;
 import org.opendolphin.core.PresentationModel;
+import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
 import com.aquafx_project.AquaFx;
-
-import de.saxsys.jfx.chattorama.resource.ImageRegistry;
 
 public class ChatApplication extends Application {
 
@@ -49,88 +48,22 @@ public class ChatApplication extends Application {
 	private ViewLoader<ChatView> chatViewLoader;
 
 	public ChatApplication() {
-		// ClientAttribute nameAttribute = new ClientAttribute(ATTR_NAME, "");
-		// ClientAttribute postAttribute = new ClientAttribute(ATTR_MESSAGE,
-		// "");
-		// ClientAttribute dateAttribute = new ClientAttribute(ATTR_DATE, "");
-		// postModel = clientDolphin.presentationModel(PM_ID_INPUT,
-		// nameAttribute, postAttribute, dateAttribute);
+		ClientAttribute nameAttribute = new ClientAttribute(ATTR_NAME, "");
+		ClientAttribute postAttribute = new ClientAttribute(ATTR_MESSAGE, "");
+		ClientAttribute dateAttribute = new ClientAttribute(ATTR_DATE, "");
+		postModel = clientDolphin.presentationModel(PM_ID_INPUT, nameAttribute,
+				postAttribute, dateAttribute);
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent event) {
-				ImageRegistry.instance().dispose();
-			}
-		});
 
 		chatViewLoader = new ViewLoader<>(ChatView.class);
 		chatView = chatViewLoader.getController();
-		
-		
-		
 
-		// setupBinding();
-		// addClientSideAction();
-
-		// FXCollections.observableArrayList(new ArrayList<Node>())
-
-		Text cry = new Text(Emoticons.CRY.toString());
-		cry.setFont(Font.loadFont(
-				getClass().getResourceAsStream(
-						"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"), 36));
-		chatView.messageBox.getChildren().add(cry);
-		
-		Text laugh = new Text(Emoticons.LAUGH.toString());
-		laugh.setFont(Font.loadFont(
-				getClass().getResourceAsStream(
-						"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"), 36));
-		chatView.messageBox.getChildren().add(laugh);
-		
-		Text smile = new Text(Emoticons.SMILE.toString());
-		smile.setFont(Font.loadFont(
-				getClass().getResourceAsStream(
-						"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"), 36));
-		chatView.messageBox.getChildren().add(smile);
-		
-		
-		
-		
-		
-		Text text = (Text) chatView.messageBox.getChildren().get(0);
-		// text.setFont(Font.font("Aegyptus", FontWeight.NORMAL,
-		// FontPosture.REGULAR, 36));
-		text.setFont(Font.loadFont(
-				getClass().getResourceAsStream(
-						"/de/saxsys/jfx/chattorama/fonts/Aegyptus313.ttf"), 36));
-
-		String string = new Character((char) Integer.valueOf("f625", 16)
-				.intValue()).toString();
-
-		// new Character("😃".toCharArray()[0], 16);
-		char[] charArray = "😃".toCharArray();
-		// int digit = Character.digit(charArray[0], 16);
-
-		
-		
-		// string = Integer.toHexString(Integer.parseInt("f625",16));
-		text.setText("Hi "
-				// + new String("😃".getBytes("UTF-8"), "UTF-8") + /*
-				// "😃".getBytes("UTF8") + string
-				// + */ "\uF603"
-				// + "\uf3bdf"
-				// + StringEscapeUtils.unescapeJava("\\u30FD")
-//				+ new String("F3000".getBytes("UTF-16"), "UTF-16")
-//				+ Integer.toHexString(Integer.parseInt("F3000",16))
-				+ convertHex2CharString("0xF3000")
-				+ convertHex2CharString("0x130EF")
-				+ StringEscapeUtils.unescapeJava("\u0041")/* .toCharArray()[0] */
-				+ StringEscapeUtils.unescapeJava("\u20ac") + "!");
-		// bind("text").of(text).to(ATTR_MESSAGE).of(postModel, withRelease);
-		// bind(ATTR_MESSAGE).of(postModel).to("text").of(text);
+		setupBinding();
+		addClientSideAction();
 
 		Parent root = chatViewLoader.getRoot();
 		root.setOpacity(0.2);
@@ -138,40 +71,42 @@ public class ChatApplication extends Application {
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 		stage.setTitle(getClass().getName());
+
+		// styling ..
 		// scene.getStylesheets().add("/path/to/css");
-
-		// apply aquafx styling
 		AquaFx.style();
-
-		// just use this if offering a menu bar (because of the black line)
 		// AquaFx.styleStage(stage, StageStyle.UNIFIED);
-		chatView.style();
+		chatView.initialize();
 
+		
+		
+//		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//		@Override
+//		public void handle(WindowEvent event) {
+//			ImageRegistry.instance().dispose();
+//		}
+//	});
+		
 		stage.show();
 
-		// clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
-		// @Override
-		// public void onFinished(List<ClientPresentationModel>
-		// presentationModels) {
-		// System.out.println(""+ presentationModels.size() + "bekommen");
-		// // visualisieren, dass wir die initialen Daten haben.
-		//
-		// FadeTransition fadeTransition = new
-		// FadeTransition(Duration.millis(1000),root);
-		// fadeTransition.setFromValue(0.2);
-		// fadeTransition.setToValue(1);
-		//
-		// fadeTransition.play();
-		//
-		// longPoll();
-		// }
-		// });
+		clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
+			@Override
+			public void onFinished(
+					List<ClientPresentationModel> presentationModels) {
+				System.out.println("" + presentationModels.size() + "bekommen");
+				// visualisieren, dass wir die initialen Daten haben.
 
-	}
+				FadeTransition fadeTransition = new FadeTransition(Duration
+						.millis(1000), root);
+				fadeTransition.setFromValue(0.2);
+				fadeTransition.setToValue(1);
 
-	// TODO remove
-	private String convertHex2CharString(String hexString) {
-		return new String(Character.toChars(Integer.parseInt(hexString.substring(2), 16)));
+				fadeTransition.play();
+
+				longPoll();
+			}
+		});
+
 	}
 
 	private boolean channelBlocked = false;
@@ -203,15 +138,15 @@ public class ChatApplication extends Application {
 
 	private void setupBinding() {
 
-		// bind textfield and message box
+		// bind name field and message box
 
 		bind("text").of(chatView.nameField).to(ATTR_NAME)
 				.of(postModel, withRelease);
 		bind(ATTR_NAME).of(postModel).to("text").of(chatView.nameField);
 
-		bind("text").of(chatView.messageBox).to(ATTR_MESSAGE)
-				.of(postModel, withRelease);
-		bind(ATTR_MESSAGE).of(postModel).to("text").of(chatView.messageBox);
+		Node node = chatView.getMessageBox();
+		bind("text").of(node).to(ATTR_MESSAGE).of(postModel, withRelease);
+		bind(ATTR_MESSAGE).of(postModel).to("text").of(node);
 
 		ObservableMap<String, HBox> messageViews = FXCollections
 				.observableHashMap();
@@ -286,9 +221,9 @@ public class ChatApplication extends Application {
 				});
 
 		// on select : pm per id:
-		// pm = clientDolphin.getAt("meineid")
-		// clientDolphin.apply(pm).to(postModel);
-		// release();
+//		 pm = clientDolphin.getAt("meineid")
+//		 clientDolphin.apply(pm).to(postModel);
+//		 release();
 
 	}
 

@@ -1,0 +1,87 @@
+# examples 4 using Emoji emoticons
+
+Text cry = new Text(Emoticons.CRY.toString());
+cry.setFont(Font.loadFont(
+		getClass().getResourceAsStream(
+				"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"),
+		36));
+chatView.messageBox.getChildren().add(cry);
+
+Text laugh = new Text(Emoticons.LAUGH.toString());
+laugh.setFont(Font.loadFont(
+		getClass().getResourceAsStream(
+				"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"),
+		36));
+chatView.messageBox.getChildren().add(laugh);
+
+Text smile = new Text(Emoticons.SMILE.toString());
+smile.setFont(Font.loadFont(
+		getClass().getResourceAsStream(
+				"/de/saxsys/jfx/chattorama/fonts/android-emoji.ttf"),
+		36));
+chatView.messageBox.getChildren().add(smile);
+
+###########################
+
+//		String string = new Character((char) Integer.valueOf("f625", 16)
+//				.intValue()).toString();
+//		// string = Integer.toHexString(Integer.parseInt("f625",16));
+//		text.setText("Hi "
+//				// + new String("😃".getBytes("UTF-8"), "UTF-8") + /*
+//				// "😃".getBytes("UTF8") + string
+//				// + */ "\uF603"
+//				// + "\uf3bdf"
+//				// + StringEscapeUtils.unescapeJava("\\u30FD")
+//				// + new String("F3000".getBytes("UTF-16"), "UTF-16")
+//				// + Integer.toHexString(Integer.parseInt("F3000",16))
+//				+ convertHex2CharString("0xF3000")
+//				+ convertHex2CharString("0x130EF")
+//				+ StringEscapeUtils.unescapeJava("\u0041")/* .toCharArray()[0] */
+//				+ StringEscapeUtils.unescapeJava("\u20ac") + "!");
+
+
+########################
+
+
+	@FXML
+	Button smileEmoticon;
+
+	@FXML
+	Button cryEmoticon;
+
+//	@FXML
+//	Button laughEmoticon;
+
+	// @FXML
+	// void onCryClicked(ActionEvent event) {
+	//
+	// }
+	//
+	// @FXML
+	// void onSmileClicked(ActionEvent event) {
+	//
+	// }
+	//
+	// @FXML
+	// void onLaughClicked(ActionEvent event) {
+	//
+	// }
+
+
+		// both does not work 4 TextFlow
+		// AquaFx.createTextAreaStyler()
+		// .setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT)
+		// .style(messageBox);
+		// // set size variant, where there is no style creator implemented yet
+		// in aquafx
+		// AquaFx.resizeControl(messageBox,
+		// Configuration.AQUAFX_CONROL_SIZE_VARIANT);
+//		AquaFx.setGroupBox(messageBox);
+
+
+// newButton.setGraphic(ImageRegistry.instance().getImageView(Images.SEND_POST));
+
+		// default button + image view
+		// smileEmoticon.setGraphic(ImageRegistry.getImageView(Images.SMILE));
+		// cryEmoticon.setGraphic(ImageRegistry.getImageView(Images.CRY));
+		// laughEmoticon.setGraphic(ImageRegistry.getImageView(Images.LAUGH));

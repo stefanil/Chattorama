@@ -21,13 +21,15 @@ public class MessageView  {
     @FXML
     TextFlow messageBox;
     
-	public void style() {
+    /**
+     * 
+     */
+	public void initialize() {
 		
 		LabelStyler ls = AquaFx.createLabelStyler()
 				.setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT);
 		ls.style(nameLabel);
 		ls.style(dateLabel);
-		AquaFx.setGroupBox(messageBox);
 		
 	}
     

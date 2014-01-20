@@ -1,12 +1,14 @@
 package de.saxsys.jfx.chattorama;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.Font;
 
 import com.aquafx_project.AquaFx;
 import com.aquafx_project.controls.skin.styles.MacOSDefaultIcons;
@@ -20,94 +22,66 @@ public class ChatView {
 	TextField nameField;
 
 	@FXML
-	TextFlow messageBox;	
+	TextArea messageBoxText;
 
 	@FXML
 	Button newButton;
 
 	@FXML
 	ListView<HBox> liste;
-	
+
 	@FXML
-    private Button smileEmoticon;
-	
+	Button rhinoEmoticon;
+
 	@FXML
-    private Button cryEmoticon;
+	Button eagleEmoticon;
 
-    @FXML
-    private Button rhinoEmoticon;
-    
-    @FXML
-    private Button laughEmoticon;
+	@FXML
+	Button bullEmoticon;
 
-    @FXML
-    private Button eagleEmoticon;
+	@FXML
+	void onRhinoClicked(MouseEvent event) {
+		append2MessageBox(Emoticons.RHINO);
+	}
 
-    @FXML
-    private Button bullEmoticon;
+	@FXML
+	void onBullClicked(MouseEvent event) {
+		append2MessageBox(Emoticons.BULL);
+	}
 
-    @FXML
-    void onCryClicked(ActionEvent event) {
+	@FXML
+	void onEagleClicked(MouseEvent event) {
+		append2MessageBox(Emoticons.EAGLE);
+	}
 
-    }
+	public void initialize() {
 
-    @FXML
-    void onSmileClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onLaughClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onRhinoClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onBullClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onEagleClicked(ActionEvent event) {
-
-    }
-    
-	public void style() {
-		
 		AquaFx.createTextFieldStyler()
 				.setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT)
-//				.setType(TextFieldType.ROUND_RECT)
+				// .setType(TextFieldType.ROUND_RECT)
 				.style(nameField);
-		
-		// both does not work 4 TextFlow
-//		AquaFx.createTextAreaStyler()
-//				.setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT)
-//				.style(messageBox);
-//		// set size variant, where there is no style creator implemented yet in aquafx
-//		AquaFx.resizeControl(messageBox, Configuration.AQUAFX_CONROL_SIZE_VARIANT);
-		AquaFx.setGroupBox(messageBox);
-		
+
 		AquaFx.createButtonStyler()
 				.setSizeVariant(Configuration.AQUAFX_CONROL_SIZE_VARIANT)
-//				.setType(ButtonType.ROUND_RECT)
-				.setIcon(MacOSDefaultIcons.SHARE)
-				.style(newButton);
-//		newButton.setGraphic(ImageRegistry.instance().getImageView(Images.SEND_POST));
-		
-		// default button + image view
-		smileEmoticon.setGraphic(ImageRegistry.getImageView(Images.SMILE));
-		cryEmoticon.setGraphic(ImageRegistry.getImageView(Images.CRY));
-		laughEmoticon.setGraphic(ImageRegistry.getImageView(Images.LAUGH));
-		
+				// .setType(ButtonType.ROUND_RECT)
+				.setIcon(MacOSDefaultIcons.SHARE).style(newButton);
+
 		// button + emoticon
 		rhinoEmoticon.setGraphic(ImageRegistry.getImageView(Images.RHINO));
 		bullEmoticon.setGraphic(ImageRegistry.getImageView(Images.BULL));
 		eagleEmoticon.setGraphic(ImageRegistry.getImageView(Images.EAGLE));
-		
+	}
+
+	public Node getMessageBox() {
+		messageBoxText.setFont(Font.loadFont(
+				getClass().getResourceAsStream(
+						"/de/saxsys/jfx/chattorama/fonts/Aegyptus313.ttf"),
+				13));
+		return messageBoxText;
+	}
+	
+	private void append2MessageBox(Emoticons emoticon) {
+		messageBoxText.appendText(emoticon.toString());
 	}
 
 }
