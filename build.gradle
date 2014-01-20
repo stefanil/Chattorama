@@ -29,7 +29,7 @@ dependencies {
     compile "org.open-dolphin:dolphin-client-javafx:0.8"
     compile "org.open-dolphin:dolphin-client:0.8"
     compile "com.aquafx-project:aquafx:0.1"
-//    compile "org.jfxtras:jfxtras-labs:8.0-r1-SNAPSHOT"
+    compile "org.jfxtras:jfxtras-labs:8.0-r1-SNAPSHOT"
 
 }
 

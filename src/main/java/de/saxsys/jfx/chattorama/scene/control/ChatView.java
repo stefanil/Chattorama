@@ -1,4 +1,4 @@
-package de.saxsys.jfx.chattorama;
+package de.saxsys.jfx.chattorama.scene.control;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -13,22 +13,24 @@ import javafx.scene.text.Font;
 import com.aquafx_project.AquaFx;
 import com.aquafx_project.controls.skin.styles.MacOSDefaultIcons;
 
+import de.saxsys.jfx.chattorama.Configuration;
+import de.saxsys.jfx.chattorama.Emoticons;
 import de.saxsys.jfx.chattorama.resource.ImageRegistry;
 import de.saxsys.jfx.chattorama.resource.Images;
 
 public class ChatView {
 
 	@FXML
-	TextField nameField;
+	public TextField nameField;
 
 	@FXML
-	TextArea messageBoxText;
+	public TextArea messageBoxText;
 
 	@FXML
-	Button newButton;
+	public Button newButton;
 
 	@FXML
-	ListView<HBox> liste;
+	public ListView<HBox> liste;
 
 	@FXML
 	Button rhinoEmoticon;

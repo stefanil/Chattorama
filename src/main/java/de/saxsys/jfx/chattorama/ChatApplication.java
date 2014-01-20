@@ -37,6 +37,9 @@ import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
 import com.aquafx_project.AquaFx;
 
+import de.saxsys.jfx.chattorama.scene.control.ChatView;
+import de.saxsys.jfx.chattorama.scene.control.MessageView;
+
 public class ChatApplication extends Application {
 
 	static ClientDolphin clientDolphin;
